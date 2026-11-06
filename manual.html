@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RSnap 使用手冊</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --surface: #ffffff; --text: #1f2328; --muted: #5d636b;
+    --border: #dfe1e4; --accent: #1f6feb; --accent-soft: #e8f0fe; --code-bg: #f0f1f3;
+    --ok: #1a7f37; --warn: #9a6700;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171a; --surface: #1d2024; --text: #e6e8eb; --muted: #9aa1a9;
+      --border: #30353b; --accent: #6ea8fe; --accent-soft: #1c2a40; --code-bg: #262a30;
+      --ok: #56d364; --warn: #e3b341;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171a; --surface: #1d2024; --text: #e6e8eb; --muted: #9aa1a9;
+    --border: #30353b; --accent: #6ea8fe; --accent-soft: #1c2a40; --code-bg: #262a30;
+    --ok: #56d364; --warn: #e3b341;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.7 system-ui, "Microsoft JhengHei UI", "PingFang TC", sans-serif;
+  }
+  main { max-width: 820px; margin: 0 auto; padding: 48px 16px 80px; }
+  header { margin-bottom: 40px; }
+  header h1 { font-size: 2rem; margin: 0 0 4px; letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--muted); }
+  nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  nav a {
+    font-size: 0.875rem; padding: 4px 12px; border: 1px solid var(--border);
+    border-radius: 999px; color: var(--text); text-decoration: none; background: var(--surface);
+  }
+  nav a:hover { border-color: var(--accent); color: var(--accent); }
+  h2 { font-size: 1.3rem; margin: 48px 0 12px; padding-top: 8px; border-top: 1px solid var(--border); }
+  h3 { font-size: 1.05rem; margin: 28px 0 8px; }
+  a { color: var(--accent); }
+  code, kbd {
+    font: 0.875em ui-monospace, "Cascadia Code", Consolas, monospace;
+    background: var(--code-bg); padding: 1px 6px; border-radius: 4px;
+  }
+  kbd { border: 1px solid var(--border); border-bottom-width: 2px; }
+  pre {
+    background: var(--code-bg); padding: 14px 16px; border-radius: 8px; overflow-x: auto;
+    font: 0.875rem/1.6 ui-monospace, "Cascadia Code", Consolas, monospace;
+  }
+  pre code { background: none; padding: 0; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 8px; overflow: hidden; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 0.85rem; color: var(--muted); font-weight: 600; background: var(--code-bg); }
+  tr:last-child td { border-bottom: 0; }
+  ol, ul { padding-left: 1.4em; }
+  li { margin: 4px 0; }
+  .note {
+    background: var(--accent-soft); border-left: 3px solid var(--accent);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0;
+  }
+  .ok { color: var(--ok); font-weight: 600; }
+  .warn { color: var(--warn); font-weight: 600; }
+  footer { margin-top: 64px; color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>RSnap</h1>
+    <p>Windows 截圖工具：按快速鍵凍結畫面、框選範圍，截圖直接進剪貼簿，還能標註、吸色、存檔。</p>
+    <nav>
+      <a href="#start">開始使用</a>
+      <a href="#capture">截圖</a>
+      <a href="#toast">預覽卡片</a>
+      <a href="#editor">編輯視窗</a>
+      <a href="#settings">設定</a>
+      <a href="#faq">常見問題</a>
+      <a href="#build">從原始碼建置</a>
+    </nav>
+  </header>
+
+  <section id="start">
+    <h2>開始使用</h2>
+    <ol>
+      <li>雙擊 <code>RSnap.exe</code>。會打開設定視窗，同時開始待命。</li>
+      <li>按 <kbd>Ctrl</kbd> + <kbd>F1</kbd> 開始截圖。</li>
+    </ol>
+    <p>關閉設定視窗後 RSnap 仍在系統匣待命。預設會開機自動啟動，開機時不會跳出設定視窗。</p>
+    <p>RSnap 只會有一個執行中的程式；已在執行時再雙擊 exe，會打開原本那個的設定視窗。</p>
+    <h3>系統匣</h3>
+    <ul>
+      <li><strong>左鍵</strong>：打開設定。</li>
+      <li><strong>右鍵</strong>：開始截圖、設定、結束 RSnap。</li>
+    </ul>
+  </section>
+
+  <section id="capture">
+    <h2>截圖</h2>
+    <p>按下快速鍵後所有螢幕都會凍結，游標變成紅色十字，旁邊跟著 10 倍放大鏡和游標所指像素的色碼。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>操作</th><th>結果</th></tr></thead>
+        <tbody>
+          <tr><td>按住左鍵拖曳後放開</td><td>截取範圍寫入剪貼簿，右上方跳出預覽卡片</td></tr>
+          <tr><td>只點一下左鍵</td><td>留在截圖模式</td></tr>
+          <tr><td>點中鍵</td><td>複製游標所指顏色（如 <code>#FF0AAB</code>）並離開</td></tr>
+          <tr><td>點右鍵或 <kbd>Esc</kbd></td><td>直接離開，拖曳途中也可以</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul>
+      <li>框選時會顯示選取範圍的 <code>寬 × 高</code>，框外變暗。</li>
+      <li>多螢幕會一起凍結，可以跨螢幕框選；不同縮放比例的螢幕一律以實體像素計算。</li>
+      <li>剪貼簿同時寫入點陣圖與 PNG 兩種格式，貼到大部分程式都能用。</li>
+    </ul>
+  </section>
+
+  <section id="toast">
+    <h2>預覽卡片</h2>
+    <p>截圖後右上方會出現預覽卡片，預設停留 5 秒，不會搶走焦點。</p>
+    <ul>
+      <li>滑鼠移到卡片上時倒數暫停，移開後重新倒數 5 秒。</li>
+      <li>右上角的 <strong>×</strong> 立即關閉。</li>
+      <li>滑鼠移入時出現兩個按鈕：
+        <ul>
+          <li><strong>畫筆</strong>：開啟編輯視窗。</li>
+          <li><strong>下載</strong>：存到設定的資料夾，卡片會顯示檔名。</li>
+        </ul>
+      </li>
+    </ul>
+    <p>吸色時則會在畫面上方中央顯示「已複製顏色 #RRGGBB」，背景就是那個顏色。</p>
+  </section>
+
+  <section id="editor">
+    <h2>編輯視窗</h2>
+    <h3>工具</h3>
+    <p>工具列都是圖示，滑鼠移上去會顯示名稱。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>工具</th><th>用法</th></tr></thead>
+        <tbody>
+          <tr><td>選取</td><td>點物件選取，拖曳移動，拖控制點調整大小；雙擊文字可修改</td></tr>
+          <tr><td>畫筆</td><td>自由繪製</td></tr>
+          <tr><td>方形</td><td>拖曳畫長方形，按住 <kbd>Shift</kbd> 變正方形</td></tr>
+          <tr><td>圓形</td><td>拖曳畫正圓</td></tr>
+          <tr><td>橢圓</td><td>拖曳畫橢圓</td></tr>
+          <tr><td>文字</td><td>點一下開始輸入，支援中文輸入法與多行；<kbd>Ctrl</kbd> + <kbd>Enter</kbd>、<kbd>Esc</kbd> 或點其他地方完成</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">畫筆等工具一律是「新增」。要選取或移動既有物件，請先切到「選取」工具。</div>
+
+    <h3>顏色、粗細與實心／空心</h3>
+    <ul>
+      <li>預設色：紅、黃、藍、綠、黑，另有自訂顏色和吸管（吸取含標註內容的畫面）。</li>
+      <li>粗細 1 到 40 px。選文字工具時改為字型、字重、字級選單。</li>
+      <li><strong>實心／空心切換鈕</strong>決定方形、圓形、橢圓的畫法。實心圖形沒有線條，所以選這三個工具時粗細會停用；畫筆不受影響。</li>
+      <li>工具列上的設定是<strong>預設值</strong>，新物件都會套用，下次開啟也會記得。</li>
+    </ul>
+
+    <h3>修改既有物件</h3>
+    <p>選取物件後，虛線框旁會出現浮動面板，只修改該物件，不影響預設值：</p>
+    <ul>
+      <li>畫筆線條：顏色、吸管、粗細</li>
+      <li>圖形：顏色、吸管、實心／空心、粗細（實心時停用）</li>
+      <li>文字：顏色、吸管、字型、字重、字級</li>
+    </ul>
+    <p>實心圖形點內部就能選取；空心圖形要點在線條上。</p>
+
+    <h3>快捷鍵</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>按鍵</th><th>功能</th></tr></thead>
+        <tbody>
+          <tr><td><kbd>Ctrl</kbd> + <kbd>Z</kbd> / <kbd>Ctrl</kbd> + <kbd>Y</kbd></td><td>復原 / 重做</td></tr>
+          <tr><td><kbd>Delete</kbd></td><td>刪除選取的物件</td></tr>
+          <tr><td><kbd>Esc</kbd></td><td>取消吸管或取消選取</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>完成編輯</h3>
+    <ul>
+      <li><strong>複製</strong>或<strong>儲存</strong>：視窗關閉並跳出預覽卡片。從卡片再次編輯時，之前畫的物件都還能修改（復原紀錄不保留）。</li>
+      <li><strong>直接關閉視窗</strong>：不會詢問，未複製或儲存的修改會捨棄，並以卡片顯示當下剪貼簿裡的圖片。</li>
+      <li>圖片比視窗大時會縮小顯示，但輸出一律是原始解析度。</li>
+    </ul>
+  </section>
+
+  <section id="settings">
+    <h2>設定</h2>
+    <p>修改後立即生效並自動儲存。</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>項目</th><th>預設值</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>儲存路徑</td><td>「下載」資料夾</td><td>資料夾不存在會自動建立；無法寫入時會請你重新選擇</td></tr>
+          <tr><td>儲存格式</td><td>PNG</td><td>PNG、JPG（品質 92）、WebP（無損）</td></tr>
+          <tr><td>截圖快速鍵</td><td><kbd>Ctrl</kbd> + <kbd>F1</kbd></td><td>註冊失敗時保留原快速鍵並顯示原因</td></tr>
+          <tr><td>開機時自動啟動</td><td>開啟</td><td>寫入目前使用者的開機項目，不需要系統管理員權限</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>檔名格式為 <code>Screenshot_20261104_191500.png</code>，同名時自動加上 <code>_1</code>、<code>_2</code>。</p>
+    <p>設定檔位於 <code>%APPDATA%\RSnap\config.json</code>，編輯器的預設顏色、粗細、字型等也存在這裡。刪除此檔即可還原所有預設值。</p>
+  </section>
+
+  <section id="faq">
+    <h2>常見問題</h2>
+    <h3>Office 裡按 Ctrl + F1 不再收合功能區</h3>
+    <p>RSnap 的全域快速鍵優先。想保留 Office 的行為，請到設定換一組快速鍵。</p>
+    <h3>快速鍵沒有反應</h3>
+    <p>可能被其他程式佔用。RSnap 啟動時若註冊失敗會自動打開設定視窗，換一組後按「套用」即可。</p>
+    <h3>影片截出來是黑的</h3>
+    <p>受 DRM 保護的內容無法截取。獨佔全螢幕的遊戲、UAC 確認畫面和登入畫面也可能截不到，這是系統限制。</p>
+    <h3>按 Esc 沒有離開截圖模式</h3>
+    <p>前景是系統管理員權限的視窗時，RSnap 可能拿不到鍵盤焦點。改按右鍵離開即可。</p>
+    <h3>搬動 exe 後開機沒有自動啟動</h3>
+    <p>手動執行一次新位置的 <code>RSnap.exe</code>，開機項目就會更新成新路徑。</p>
+    <h3>怎麼完全移除？</h3>
+    <p>在設定中關閉「開機時自動啟動」，從系統匣結束 RSnap，再刪除 exe 和 <code>%APPDATA%\RSnap</code> 資料夾。</p>
+  </section>
+
+  <section id="build">
+    <h2>從原始碼建置</h2>
+    <p>需要 Rust（MSVC 工具鏈）以及含 C++ 工具的 Visual Studio Build Tools。</p>
+<pre><code>cargo build --release   # 輸出 target\release\RSnap.exe
+cargo test              # 單元測試</code></pre>
+    <p>重新產生圖示：</p>
+<pre><code>cargo run --example make_icon -- assets\RSnap.ico</code></pre>
+    <p>完整行為規格與設計理由請見 <a href="docs/SPEC.md">docs/SPEC.md</a>。</p>
+  </section>
+
+  <footer>RSnap 0.1.0 · Windows · Rust + Win32 / Direct2D</footer>
+</main>
+</body>
+</html>
